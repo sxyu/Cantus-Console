@@ -1,0 +1,3 @@
+printline("Hello World!")
+printline("Today is " & today().dayofweekname())
+!!!
