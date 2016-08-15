@@ -73,6 +73,9 @@ namespace Cantus.CantusConsole
                 bool runFiles = false;
                 bool alwaysBlock = false;
                 bool exitAfterComplete = false;
+                StringBuilder extraLine = new StringBuilder();
+                int extraCt = 0;
+
                 if (!args.Contains("--bare"))
                 {
                     // setup handlers for exit events so we can save user data on exit.
@@ -204,24 +207,34 @@ namespace Cantus.CantusConsole
                     }
                     else
                     {
-                            runFiles = true;
+                        runFiles = true;
+                        if (extraCt > 0) extraLine.Append(" ");
+                        extraLine.Append(arg);
+                        extraCt++; 
+                    }
+                }
+                if (runFiles)
+                {
+                    if (extraCt > 0)
+                    {
                         try
                         {
-                           Console.WriteLine( _eval.Eval(arg, returnedOnly:true));
+                           if (extraLine.ToString().Contains(";"))
+                               Console.WriteLine( _eval.Eval(extraLine.ToString(), returnedOnly:true));
+                           else
+                               Console.WriteLine( _eval.EvalExpr(extraLine.ToString()));
                         }
                         catch (Exception ex)
                         {
                             Console.Error.WriteLine(ex.Message);
                         }
                     }
+                    Environment.Exit(0);
                 }
-                if (runFiles) Environment.Exit(0);
 
                 Console.WriteLine("Welcome to Cantus v." +
                     Assembly.GetAssembly(typeof(Cantus.Core.CantusEvaluator)).GetName().Version + " Alpha");
                 Console.WriteLine("By Alex Yu 2016");
-
-
 
                 ScriptFeeder feeder = new ScriptFeeder(evaluator: _eval);
                 Console.Title = "Cantus Console";
