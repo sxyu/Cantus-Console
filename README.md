@@ -2,8 +2,8 @@
 *Cantus* is a lightweight yet powerful mathematical language.
 This is an interactive console application for running Cantus expressions and scripts.
 
-For the full Cantus suite including an editor and a console, download and install the installer: 
-[From here](https://github.com/sxyu/Cantus-Core/blob/master/setup/setup.exe)
+For the full Cantus suite including an editor and a console, download and run the installer: 
+[From here](https://raw.githubusercontent.com/sxyu/Cantus-Core/master/setup/cantus-latest.exe)
 
 ## Basic usage
 * Interactive mode: simply run can.exe to run commands line-by-line. End any line with ':' to temporarily enter block mode.
