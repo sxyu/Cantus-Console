@@ -121,7 +121,7 @@ namespace Cantus.CantusConsole
                         }
                         catch (Exception ex)
                         {
-                            Console.Error.WriteLine(ex.ToString());
+                            Console.Error.WriteLine(ex.Message);
                             if (file == "init.can")
                             {
                                 Console.Error.WriteLine("Initialization Error: Error occurred while processing init.can.\nVariables and functions may not load. Message:\n" + ex.Message);
@@ -439,7 +439,7 @@ namespace Cantus.CantusConsole
                     }
                     catch (Exception ex)
                     {
-                        Console.Error.WriteLine(ex.ToString());
+                        Console.Error.WriteLine(ex.Message);
                     }
 
                     if (!alwaysBlock && string.IsNullOrWhiteSpace(line))
