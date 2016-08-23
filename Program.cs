@@ -58,11 +58,12 @@ namespace Cantus.CantusConsole
             }
             return true;
         }
-        
 
+
+        private static HandlerRoutine _closeHanler = new HandlerRoutine(ConsoleCtrl);
         static void InitConsole()
         {
-            SetConsoleCtrlHandler(new HandlerRoutine(ConsoleCtrl) , true);
+            SetConsoleCtrlHandler(_closeHanler, true);
         }
 
         static void Main(string[] args)
@@ -258,7 +259,7 @@ namespace Cantus.CantusConsole
                     feeder.BeginExecution();
                 };
 
-                _eval.WriteOutput += (object sender, CantusEvaluator.CantusIOEventArgs e) =>
+                _eval.WriteOutput += (object sender, CantusEvaluator.IOEventArgs e) =>
                 {
                     ClearLine();
                     if (!lineTerm) Console.SetCursorPosition(lastLeft, Console.CursorTop - 1);
@@ -281,7 +282,7 @@ namespace Cantus.CantusConsole
                     Console.Clear();
                 };
 
-                _eval.ReadInput += (object sender, CantusEvaluator.CantusIOEventArgs e, out object @return) =>
+                _eval.ReadInput += (object sender, CantusEvaluator.IOEventArgs e, out object @return) =>
                 {
                     ClearLine();
                     @return = null;
@@ -289,7 +290,7 @@ namespace Cantus.CantusConsole
                     {
                         buffer.Remove(0, 1);
                     }
-                    if (e.Message == CantusEvaluator.CantusIOEventArgs.eMessage.readLine)
+                    if (e.Message == CantusEvaluator.IOEventArgs.IOMessage.readLine)
                     {
                         if (buffer.Length == 0)
                         {
@@ -310,7 +311,7 @@ namespace Cantus.CantusConsole
                             }
                         }
                     }
-                    else if (e.Message == CantusEvaluator.CantusIOEventArgs.eMessage.readChar)
+                    else if (e.Message == CantusEvaluator.IOEventArgs.IOMessage.readChar)
                     {
                         if (buffer.Length == 0)
                         {
@@ -319,12 +320,12 @@ namespace Cantus.CantusConsole
                         @return = buffer[0];
                         buffer = buffer.Remove(0, 1);
                     }
-                    else if (e.Message == CantusEvaluator.CantusIOEventArgs.eMessage.readWord ||
-                             e.Message == CantusEvaluator.CantusIOEventArgs.eMessage.confirm)
+                    else if (e.Message == CantusEvaluator.IOEventArgs.IOMessage.readWord ||
+                             e.Message == CantusEvaluator.IOEventArgs.IOMessage.confirm)
                     {
                         while (true)
                         {
-                            if (e.Message == CantusEvaluator.CantusIOEventArgs.eMessage.confirm)
+                            if (e.Message == CantusEvaluator.IOEventArgs.IOMessage.confirm)
                             {
                                 if (e.Args["yes"].ToString() == "yes")
                                 {
@@ -355,7 +356,7 @@ namespace Cantus.CantusConsole
                                 buffer = buffer.Remove(0, idx);
                             }
 
-                            if (e.Message == CantusEvaluator.CantusIOEventArgs.eMessage.confirm)
+                            if (e.Message == CantusEvaluator.IOEventArgs.IOMessage.confirm)
                             {
                                 string ret = @return.ToString();
                                 if (e.Args["yes"].ToString() == "yes")
@@ -415,6 +416,7 @@ namespace Cantus.CantusConsole
                 {
                     prompted = false;
                     string line = Console.ReadLine();
+                    if (line == null) break;
                     lineTerm = true;
                     if (line.EndsWith(":"))
                     {
@@ -449,8 +451,15 @@ namespace Cantus.CantusConsole
 
                     if (!prompted) Console.Write(_prompt);
                 }
+                feeder.EndAfterQueueDone();
             }
-            catch { }
+            finally {
+                try
+                {
+                    _eval.Dispose();
+                }
+                catch { }
+            }
         }
     }
 }
