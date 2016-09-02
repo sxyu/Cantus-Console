@@ -72,6 +72,9 @@ namespace Cantus.CantusConsole
                 bool runFiles = false;
                 bool alwaysBlock = false;
                 bool exitAfterComplete = false;
+
+                string cantusPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + Path.DirectorySeparatorChar;
+
                 StringBuilder extraLine = new StringBuilder();
                 int extraCt = 0;
 
@@ -82,9 +85,9 @@ namespace Cantus.CantusConsole
 
                     // setup folders, etc.
                     string[] requiredFolders = {
-                    "plugin",
-                    "include",
-                    "init"
+                    cantusPath + "plugin",
+                    cantusPath + "include",
+                    cantusPath + "init"
                 };
                     foreach (string dir in requiredFolders)
                     {
@@ -102,26 +105,26 @@ namespace Cantus.CantusConsole
 
                     // load initialization, plugin scripts
                     List<string> initScripts = new List<string>();
-                    if (Directory.Exists("plugin/"))
-                        initScripts.AddRange(Directory.GetFiles("plugin/", "*.can", SearchOption.AllDirectories));
+                    if (Directory.Exists(cantusPath + "plugin/"))
+                        initScripts.AddRange(Directory.GetFiles(cantusPath + "plugin/", "*.can", SearchOption.AllDirectories));
 
                     // initialization files: init.can and init/* ran in root scope on startup
-                    if (File.Exists("init.can"))
-                        initScripts.Add("init.can");
-                    if (Directory.Exists("init/"))
-                        initScripts.AddRange(Directory.GetFiles("init/", "*.can", SearchOption.AllDirectories));
+                    if (File.Exists(cantusPath + "init.can"))
+                        initScripts.Add(cantusPath + "init.can");
+                    if (Directory.Exists(cantusPath + "init/"))
+                        initScripts.AddRange(Directory.GetFiles(cantusPath + "init/", "*.can", SearchOption.AllDirectories));
 
                     foreach (string file in initScripts)
                     {
                         try
                         {
                             // Evaluate each file. On error, ignore.
-                            _eval.Load(file, file == "init.can" || file.ToLower().StartsWith("init" + Path.DirectorySeparatorChar));
+                            _eval.Load(file, file == cantusPath + "init.can" || file.ToLower().StartsWith(cantusPath + "init" + Path.DirectorySeparatorChar));
                         }
                         catch (Exception ex)
                         {
                             Console.Error.WriteLine(ex.Message);
-                            if (file == "init.can")
+                            if (file == cantusPath + "init.can")
                             {
                                 Console.Error.WriteLine("Initialization Error: Error occurred while processing init.can.\nVariables and functions may not load. Message:\n" + ex.Message);
                             }
@@ -221,7 +224,7 @@ namespace Cantus.CantusConsole
                            if (extraLine.ToString().Contains(";"))
                                Console.WriteLine( _eval.Eval(extraLine.ToString(), returnedOnly:true));
                            else
-                               Console.WriteLine( _eval.EvalExpr(extraLine.ToString()));
+                               Console.WriteLine( _eval.Eval(extraLine.ToString()));
                         }
                         catch (Exception ex)
                         {
@@ -434,7 +437,7 @@ namespace Cantus.CantusConsole
                         }
                         else
                         {
-                            Console.WriteLine(_eval.EvalExpr(line));
+                            Console.WriteLine(_eval.Eval(line));
                         }
                     }
                     catch (Exception ex)
