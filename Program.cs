@@ -34,7 +34,7 @@ namespace Cantus.CantusConsole
         #endregion
 
         private static string _prompt = string.Format("{0}@Cantus> ", Environment.UserName);
-        private static CantusEvaluator _eval = new CantusEvaluator();
+        private static CantusEvaluator _eval = new CantusEvaluator(reloadDefault:false);
 
         static void ClearLine()
         {
@@ -78,10 +78,21 @@ namespace Cantus.CantusConsole
                 StringBuilder extraLine = new StringBuilder();
                 int extraCt = 0;
 
+                _eval.ThreadController.MaxThreads = 5;
+
                 if (!args.Contains("--bare"))
                 {
                     // setup handlers for exit events so we can save user data on exit.
                     InitConsole();
+
+                    _eval.ReloadDefault();
+                    try {
+                        _eval.ReInitialize();
+                    }
+                    catch(Exception ex)
+                    {
+                        Console.Error.WriteLine("Initialization Error:\n" + ex.Message);
+                    }
 
                     // setup folders, etc.
                     string[] requiredFolders = {
@@ -99,40 +110,6 @@ namespace Cantus.CantusConsole
                             }
                             catch
                             {
-                            }
-                        }
-                    }
-
-                    // load initialization, plugin scripts
-                    List<string> initScripts = new List<string>();
-                    if (Directory.Exists(cantusPath + "plugin/"))
-                        initScripts.AddRange(Directory.GetFiles(cantusPath + "plugin/", "*.can", SearchOption.AllDirectories));
-
-                    // initialization files: init.can and init/* ran in root scope on startup
-                    if (File.Exists(cantusPath + "init.can"))
-                        initScripts.Add(cantusPath + "init.can");
-                    if (Directory.Exists(cantusPath + "init/"))
-                        initScripts.AddRange(Directory.GetFiles(cantusPath + "init/", "*.can", SearchOption.AllDirectories));
-
-                    foreach (string file in initScripts)
-                    {
-                        try
-                        {
-                            // Evaluate each file. On error, ignore.
-                            _eval.Load(file, file == cantusPath + "init.can" || file.ToLower().StartsWith(cantusPath + "init" + Path.DirectorySeparatorChar));
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.Error.WriteLine(ex.Message);
-                            if (file == cantusPath + "init.can")
-                            {
-                                Console.Error.WriteLine("Initialization Error: Error occurred while processing init.can.\nVariables and functions may not load. Message:\n" + ex.Message);
-                            }
-                            else
-                            {
-                                Console.Error.WriteLine("Initialization Error: Error occurred while loading \"" +
-                                    file.Replace(Path.DirectorySeparatorChar, '.').Remove(file.LastIndexOf(".")) +
-                                    "\"\n" + ex.Message);
                             }
                         }
                     }
@@ -164,11 +141,11 @@ namespace Cantus.CantusConsole
                     } else if (arg == "--implicit") {
                         _eval.ExplicitMode = false;
                     } else if (arg == "--anglerepr=rad") {
-                        _eval.AngleMode = CantusEvaluator.eAngleRepresentation.Radian;
+                        _eval.AngleMode = CantusEvaluator.AngleRepresentation.Radian;
                     } else if (arg == "--anglerepr=deg") {
-                        _eval.AngleMode = CantusEvaluator.eAngleRepresentation.Degree;
+                        _eval.AngleMode = CantusEvaluator.AngleRepresentation.Degree;
                     } else if (arg == "--anglerepr=grad") {
-                        _eval.AngleMode = CantusEvaluator.eAngleRepresentation.Gradian;
+                        _eval.AngleMode = CantusEvaluator.AngleRepresentation.Gradian;
                     } else if (arg == "--output=raw") {
                         _eval.OutputFormat = CantusEvaluator.eOutputFormat.Raw;
                     } else if (arg == "--output=math") {
