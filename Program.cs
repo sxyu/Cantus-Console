@@ -147,11 +147,11 @@ namespace Cantus.CantusConsole
                     } else if (arg == "--anglerepr=grad") {
                         _eval.AngleMode = CantusEvaluator.AngleRepresentation.Gradian;
                     } else if (arg == "--output=raw") {
-                        _eval.OutputFormat = CantusEvaluator.eOutputFormat.Raw;
+                        _eval.OutputMode = CantusEvaluator.OutputFormat.Raw;
                     } else if (arg == "--output=math") {
-                        _eval.OutputFormat = CantusEvaluator.eOutputFormat.Math;
+                        _eval.OutputMode = CantusEvaluator.OutputFormat.Math;
                     } else if (arg == "--output=sci") {
-                        _eval.OutputFormat = CantusEvaluator.eOutputFormat.Scientific;
+                        _eval.OutputMode = CantusEvaluator.OutputFormat.Scientific;
                     }
                     else if (arg == "-b" || arg == "--block")
                     {
@@ -159,6 +159,7 @@ namespace Cantus.CantusConsole
                     }
                     else if (arg == "-s" || arg == "--script")
                     {
+                        alwaysBlock = true;
                         exitAfterComplete = true;
                     }
                     else if (File.Exists(arg))

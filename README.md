@@ -8,6 +8,7 @@ For the full Cantus suite including an editor and a console, download and run th
 ## Basic usage
 * Interactive mode: simply run can.exe to run commands line-by-line. End any line with ':' to temporarily enter block mode.
 * Block mode: run 'can -b' to run blocks. Expressions are run line-by-line using a ScriptFeeder, but no result is returned until 'return' is used.
+* Script mode: 'can -s' works the same way as block mode, but exists after a result is returned.
 * Execute a file: run 'can <filename>'. The .can extension may be omitted: to run test.can, you may type 'can test'
 * Quick evaluation: use 'can <expression>' to quickly evaluate an expression. E.g. 'can 1+2 * 3' returns 7. Spaces are ignored.
 
