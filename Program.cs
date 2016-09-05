@@ -45,9 +45,10 @@ namespace Cantus.CantusConsole
 
         static bool ConsoleCtrl(CtrlTypes e)
         {
+            string cantusPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + Path.DirectorySeparatorChar;
             try
             {
-                File.WriteAllText("init.can", _eval.ToScript());
+                File.WriteAllText(cantusPath + "init.can", _eval.ToScript());
             }
             catch
             {
