@@ -80,26 +80,26 @@ namespace Cantus.CantusConsole
 
                 _eval.ThreadController.MaxThreads = 5;
 
-                if (!args.Contains("--bare"))
-                {
-                    // setup handlers for exit events so we can save user data on exit.
-                    InitConsole();
+                // setup handlers for exit events so we can save user data on exit.
+                InitConsole();
 
-                    _eval.ReloadDefault();
-                    try {
-                        _eval.ReInitialize();
-                    }
-                    catch(Exception ex)
+                    if (!args.Contains("--bare"))
                     {
-                        Console.Error.WriteLine("Initialization Error:\n" + ex.Message);
-                    }
+                        _eval.ReloadDefault();
+                        try {
+                            _eval.ReInitialize();
+                        }
+                        catch(Exception ex)
+                        {
+                            Console.Error.WriteLine("Initialization Error:\n" + ex.Message);
+                        }
 
-                    // setup folders, etc.
-                    string[] requiredFolders = {
-                    cantusPath + "plugin",
-                    cantusPath + "include",
-                    cantusPath + "init"
-                };
+                        // setup folders, etc.
+                        string[] requiredFolders = {
+                        cantusPath + "plugin",
+                        cantusPath + "include",
+                        cantusPath + "init"
+                    };
                     foreach (string dir in requiredFolders)
                     {
                         if (!Directory.Exists(dir))
@@ -128,7 +128,6 @@ namespace Cantus.CantusConsole
                         Console.WriteLine("--explicit/--implicit        \tExplicit mode on/off");
                         Console.WriteLine("--anglerepr=[deg/rad/grad]   \tSet angle representation");
                         Console.WriteLine("--output=[raw/math/sci]      \tSet output format");
-                        Console.WriteLine("--output=[raw/math/sci]      \tSet output format");
                         Console.WriteLine();
                         Console.WriteLine("-h --help                    \tShow this help");
                         return;
@@ -156,11 +155,17 @@ namespace Cantus.CantusConsole
                     else if (arg == "-b" || arg == "--block")
                     {
                         alwaysBlock = true;
+                        _eval.ThreadController.MaxThreads = int.MaxValue;
                     }
                     else if (arg == "-s" || arg == "--script")
                     {
                         alwaysBlock = true;
                         exitAfterComplete = true;
+                        _eval.ThreadController.MaxThreads = int.MaxValue;
+                    }
+                    else if (arg == "--bare")
+                    {
+                        // do nothing, already dealt with
                     }
                     else if (File.Exists(arg))
                     {
@@ -234,9 +239,9 @@ namespace Cantus.CantusConsole
                     block = false;
                     Console.WriteLine(result);
                     _prompt = string.Format("{0}@Cantus> ", Environment.UserName);
-                    Console.Write(result);
                     prompted = true;
                     if (exitAfterComplete) Environment.Exit(0);
+                    Console.Write(_prompt);
                     feeder.BeginExecution();
                 };
 
@@ -426,7 +431,7 @@ namespace Cantus.CantusConsole
                     if (!alwaysBlock && string.IsNullOrWhiteSpace(line))
                     {
                         block = false;
-                        Console.WriteLine();
+                        //Console.WriteLine();
                         _prompt = string.Format("{0}@Cantus> ", Environment.UserName);
                     }
 
