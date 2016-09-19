@@ -206,13 +206,13 @@ namespace Cantus.CantusConsole
                         try
                         {
                            if (extraLine.ToString().Contains(";"))
-                               Console.WriteLine( _eval.Eval(extraLine.ToString(), returnedOnly:true));
+                               Console.Write( _eval.Eval(extraLine.ToString(), returnedOnly:true));
                            else
-                               Console.WriteLine( _eval.Eval(extraLine.ToString()));
+                               Console.Write( _eval.Eval(extraLine.ToString()));
                         }
                         catch (Exception ex)
                         {
-                            Console.Error.WriteLine(ex.Message);
+                            Console.Error.Write(ex.Message);
                         }
                     }
                     Environment.Exit(0);
