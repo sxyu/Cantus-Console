@@ -76,7 +76,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>"C:\Program Files (x86)\Windows Kits\10\bin\x64\signtool.exe" sign /f "E:\Programming\DotNet\ayu_spc.pfx" "$(TargetPath)" &amp;&amp; "C:\Program Files (x86)\Inno Setup 5\iscc.exe" "$(SolutionDir)Setup\cantus.iss"  &amp;&amp; copy /Y "$(SolutionDir)Setup\cantus.iss.bak" "$(SolutionDir)Setup\cantus.iss" &amp;&amp; FOR /R "$(SolutionDir)Cantus\setup\" %25%25G IN (*.exe) do "C:\Program Files (x86)\Windows Kits\10\bin\x64\signtool.exe" sign /f "E:\Programming\DotNet\ayu_spc.pfx" "%25%25G"</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
