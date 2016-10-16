@@ -219,7 +219,7 @@ namespace Cantus.CantusConsole
                 }
 
                 Console.WriteLine("Welcome to Cantus v." +
-                    Assembly.GetAssembly(typeof(Cantus.Core.CantusEvaluator)).GetName().Version + " Alpha");
+                    Assembly.GetAssembly(typeof(Cantus.Core.CantusEvaluator)).GetName().Version + " Beta");
                 Console.WriteLine("By Alex Yu 2016");
 
                 ScriptFeeder feeder = new ScriptFeeder(evaluator: _eval);
