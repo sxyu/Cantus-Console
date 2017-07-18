@@ -34,7 +34,7 @@ namespace Cantus.CantusConsole
         #endregion
 
         private static string _prompt = string.Format("{0}@Cantus> ", Environment.UserName);
-        private static CantusEvaluator _eval = new CantusEvaluator(reloadDefault:false);
+        private static CantusEvaluator _eval = new CantusEvaluator(reloadDefault: false);
 
         static void ClearLine()
         {
@@ -60,6 +60,11 @@ namespace Cantus.CantusConsole
             return true;
         }
 
+        static void ExitRequested(object sender, EventArgs e)
+        {
+            ConsoleCtrl(CtrlTypes.CTRL_CLOSE_EVENT);
+            Environment.Exit(0);
+        }
 
         private static HandlerRoutine _closeHanler = new HandlerRoutine(ConsoleCtrl);
         static void InitConsole()
@@ -80,6 +85,8 @@ namespace Cantus.CantusConsole
                 int extraCt = 0;
 
                 _eval.ThreadController.MaxThreads = 5;
+
+                _eval.ExitRequested += ExitRequested;
 
                 // setup handlers for exit events so we can save user data on exit.
                 InitConsole();
